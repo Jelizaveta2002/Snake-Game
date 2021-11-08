@@ -11,7 +11,7 @@ class Game():
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
         self.font_name = "font/8-BIT WONDER.TTF"
-        self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
+        self.BLACK, self.WHITE = (0, 200, 0), (255, 0, 0)
         self.main_menu = MainMenu(self)
         self.options = OptionsMenu(self)
         self.credits = CreditsMenu(self)

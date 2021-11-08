@@ -35,7 +35,7 @@ class MainMenu(Menu):
             self.game.display.fill(self.game.BLACK)
             self.game.draw_text("Main Menu", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
             self.game.draw_text("Start Game", 20, self.startx, self.starty)
-            self.game.draw_text("Options", 20, self.optionx, self.optiony)
+            self.game.draw_text("Settings", 20, self.optionx, self.optiony)
             self.game.draw_text("Credits", 20, self.creditsx, self.creditsy)
             self.draw_cursor()
             self.blit_screen()
@@ -44,8 +44,8 @@ class MainMenu(Menu):
         if self.game.DOWN_KEY:
             if self.state == "Start":
                 self.cursor_rect.midtop = (self.optionx + self.offset, self.optiony)
-                self.state = "Options"
-            elif self.state == "Options":
+                self.state = "Settings"
+            elif self.state == "Settings":
                 self.cursor_rect.midtop = (self.creditsx + self.offset, self.creditsy)
                 self.state = "Credits"
             elif self.state == "Credits":
@@ -55,19 +55,19 @@ class MainMenu(Menu):
             if self.state == "Start":
                 self.cursor_rect.midtop = (self.creditsx + self.offset, self.creditsy)
                 self.state = "Credits"
-            elif self.state == "Options":
+            elif self.state == "Settings":
                 self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
                 self.state = "Start"
             elif self.state == "Credits":
                 self.cursor_rect.midtop = (self.optionx + self.offset, self.optiony)
-                self.state = "Options"
+                self.state = "Settings"
 
     def check_input(self):
         self.move_cursor()
         if self.game.START_KEY:
             if self.state == "Start":
                 self.game.playing = True
-            elif self.state == "Options":
+            elif self.state == "Settings":
                 self.game.curr_menu = self.game.options
             elif self.state == "Credits":
                 self.game.curr_menu = self.game.credits
@@ -88,7 +88,7 @@ class OptionsMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill((0, 0, 0))
-            self.game.draw_text("Options", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
+            self.game.draw_text("Settings", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
             self.game.draw_text("Volume", 15, self.volx, self.voly)
             self.game.draw_text("Controls", 15, self.controlsx, self.contrlosy)
             self.draw_cursor()
