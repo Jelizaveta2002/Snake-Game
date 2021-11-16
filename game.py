@@ -3,7 +3,21 @@ import pygame
 import sys
 
 from menu import *
+import time
 
+
+clock = pygame.time.Clock()
+
+
+# initiate pygame
+pygame.init()
+
+# Game name
+pygame.display.set_caption('Snake')
+
+# Image
+
+block_image = pygame.image.load('graphics/block.png')
 
 # initiate pygame
 pygame.init()
