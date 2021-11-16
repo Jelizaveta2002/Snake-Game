@@ -1,14 +1,34 @@
+import random
+import time
+
 import pygame
+import sys
+
 from menu import *
-# Image
-snake_image = pygame.image.load('graphics/snake_head.png')
+
+
+# initiate pygame
+pygame.init()
+
+# Clock
+clock = pygame.time.Clock()
+
 # Set window
 w_height = 720
 w_width = 480
 screen = pygame.display.set_mode((w_width, w_height))
 
+# Game name
+pygame.display.set_caption('Runner')
 
-class Game():
+# image
+# bg=pygame.image.load()
+snake_image = pygame.image.load('graphics/snake_head.png')
+block_image = pygame.image.load('graphics/block.png')
+
+
+
+class Game:
     def __init__(self):
         pygame.init()
         self.running, self.playing = True, False
@@ -23,16 +43,46 @@ class Game():
         self.credits = CreditsMenu(self)
         self.curr_menu = self.main_menu
 
+    # Game functions
+    def crash(self):
+        self.display.fill(self.BLACK)
+        self.draw_text("Game Over", 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
+        self.window.blit(self.display, (0, 0))
+        pygame.display.update()
+        time.sleep(2)
+        self.game_loop()
+
     def game_loop(self):
+
+        snake = Snake()
+        block = Block()
         while self.playing:
             self.check_events()
             if self.START_KEY:
                 self.playing = False
-            self.display.fill(self.BLACK)
-            self.draw_text("Game Over", 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
-            self.window.blit(self.display, (0, 0))
+
+            # Movement
+            snake.update()
+            block.update()
+
+            # On screen
+            screen.fill('#ccffcc')
+            screen.blit(snake.image, (snake.rect.x, snake.rect.y))
+            screen.blit(block.image, (block.rect.x, block.rect.y))
+
+            collision_tolerance = 10
+            if snake.rect.colliderect(block.rect):
+                if abs(block.rect.bottom - snake.rect.top) < collision_tolerance:
+                    self.crash()
+                if abs(block.rect.right - snake.rect.left) < collision_tolerance:
+                    snake.rect.left = block.rect.right + 1
+                    print('left')
+                if abs(block.rect.left - snake.rect.right) < collision_tolerance:
+                    snake.rect.right = block.rect.left - 1
+                    print('right')
+
             pygame.display.update()
-            self.reset_keys()
+            clock.tick(60)
 
     def check_events(self):
         for event in pygame.event.get():
@@ -49,20 +99,22 @@ class Game():
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
 
-    def reset_keys(self):
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
-
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
         text_surface = font.render(text, True, self.WHITE)
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         self.display.blit(text_surface, text_rect)
+#
 
-# Player
+    def reset_keys(self):
+        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+#
+
+
 class Snake:
 
-    def init(self):
+    def __init__(self):
         self.image = snake_image
         self.width = self.image.get_width()
         self.height = self.image.get_height()
@@ -90,3 +142,25 @@ class Snake:
 # Boundary
 west_b = 0
 east_b = 448
+
+
+# Blocks
+class Block:
+    def __init__(self):
+        self.image = block_image
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randrange(west_b, east_b)
+        self.rect.y = 100
+
+        self.speedy = 5
+
+    def update(self):
+        self.rect.y = self.rect.y + self.speedy
+
+        # Check boundary of block
+        if self.rect.y > w_height:
+            self.rect.y = 0 - self.height
+            self.rect.x = random.randrange(west_b, east_b - self.width)
