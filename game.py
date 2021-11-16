@@ -1,5 +1,9 @@
 import pygame
 from menu import *
+import time
+
+
+clock = pygame.time.Clock()
 
 
 class Game():
@@ -16,6 +20,14 @@ class Game():
         self.options = OptionsMenu(self)
         self.credits = CreditsMenu(self)
         self.curr_menu = self.main_menu
+
+    def crash(self):
+        self.display.fill(self.BLACK)
+        self.draw_text("Game Over", 20, self.DISPLAY_W / 2, self.DISPLAY_H / 2)
+        self.window.blit(self.display, (0, 0))
+        pygame.display.update()
+        time.sleep(2)
+        self.game_loop()
 
     def game_loop(self):
         while self.playing:
