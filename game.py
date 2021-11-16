@@ -1,6 +1,4 @@
 import random
-import time
-
 import pygame
 import sys
 
@@ -9,9 +7,6 @@ from menu import *
 
 # initiate pygame
 pygame.init()
-
-# Clock
-clock = pygame.time.Clock()
 
 # Set window
 w_height = 720
@@ -26,6 +21,8 @@ pygame.display.set_caption('Runner')
 snake_image = pygame.image.load('graphics/snake_head.png')
 block_image = pygame.image.load('graphics/block.png')
 
+import time
+clock = pygame.time.Clock()
 
 
 class Game:
