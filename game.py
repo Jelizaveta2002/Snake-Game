@@ -1,5 +1,12 @@
 import pygame
 from menu import *
+from pygame.math import Vector2
+# Image
+snake_image = pygame.image.load('graphics/snake_head.png')
+# Set window
+w_height = 720
+w_width = 480
+screen = pygame.display.set_mode((w_width, w_height))
 
 
 class Game():
@@ -52,3 +59,35 @@ class Game():
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         self.display.blit(text_surface, text_rect)
+
+# Player
+class Snake:
+
+    def init(self):
+        self.image = snake_image
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+        self.rect = self.image.get_rect()
+        self.rect.x = int(w_width * 0.5)
+        self.rect.y = int(w_height * 0.5)
+
+        self.speed_x = 10
+
+    def update(self):
+        key_state = pygame.key.get_pressed()
+        if key_state[pygame.K_LEFT]:
+            self.rect.x -= 7
+        if key_state[pygame.K_RIGHT]:
+            self.rect.x += 7
+
+        # Check boundary
+        if self.rect.left < west_b:
+            self.rect.left = west_b
+        if self.rect.left > east_b:
+            self.rect.left = east_b
+
+
+# Boundary
+west_b = 0
+east_b = 448
