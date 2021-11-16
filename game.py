@@ -1,6 +1,5 @@
 import pygame
 from menu import *
-from pygame.math import Vector2
 # Image
 snake_image = pygame.image.load('graphics/snake_head.png')
 # Set window
