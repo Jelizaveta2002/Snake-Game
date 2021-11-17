@@ -5,7 +5,6 @@ import sys
 from menu import *
 import time
 
-
 clock = pygame.time.Clock()
 
 
@@ -64,7 +63,12 @@ class Game:
         self.game_loop()
 
     def game_loop(self):
-
+        import pygame
+        file = 'happy-clappy-ukulele.mp3'
+        pygame.init()
+        pygame.mixer.init()
+        pygame.mixer.music.load(file)
+        pygame.mixer.music.play(-1)
         snake = Snake()
         block = Block()
         while self.playing:
