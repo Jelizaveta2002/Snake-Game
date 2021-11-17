@@ -55,16 +55,16 @@ class Game:
 
     # Game functions
     def crash(self):
-        file = 'TunePocket-Epic-Fail-Preview.mp3'
+        file = 'e6a671cd3585e67.mp3'
         pygame.init()
         pygame.mixer.init()
         pygame.mixer.music.load(file)
-        pygame.mixer.music.play(5)
+        pygame.mixer.music.play(4)
         self.display.fill(self.BLACK)
         self.draw_text("Game Over", 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
         self.window.blit(self.display, (0, 0))
         pygame.display.update()
-        time.sleep(2)
+        time.sleep(3)
         self.game_loop()
 
     def game_loop(self):
