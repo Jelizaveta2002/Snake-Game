@@ -55,7 +55,7 @@ class Game:
 
     # Game functions
     def crash(self):
-        file = 'e6a671cd3585e67.mp3'
+        file = 'music/game_over.mp3'
         pygame.init()
         pygame.mixer.init()
         pygame.mixer.music.load(file)
@@ -69,7 +69,7 @@ class Game:
 
     def game_loop(self):
         import pygame
-        file = 'happy-clappy-ukulele.mp3'
+        file = 'music/game_loop.mp3'
         pygame.init()
         pygame.mixer.init()
         pygame.mixer.music.load(file)
