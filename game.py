@@ -2,6 +2,8 @@ import random
 import pygame
 import sys
 
+import game_over
+from game_over import *
 from menu import *
 import time
 
@@ -34,6 +36,12 @@ pygame.display.set_caption('Runner')
 snake_image = pygame.image.load('graphics/snake_head.png')
 block_image = pygame.image.load('graphics/block.png')
 
+
+start_img = pygame.image.load("graphics/apple.png").convert_alpha()
+exit_img = pygame.image.load("graphics/apple.png").convert_alpha()
+
+
+
 import time
 clock = pygame.time.Clock()
 
@@ -41,8 +49,8 @@ clock = pygame.time.Clock()
 class Game:
     def __init__(self):
         pygame.init()
-        self.running, self.playing = True, False
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+        self.running, self.playing, self.game_over_screen = True, False, False
+        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.RUN_KEY = False, False, False, False, False
         self.DISPLAY_W, self.DISPLAY_H = 480, 720
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
@@ -52,20 +60,17 @@ class Game:
         self.options = OptionsMenu(self)
         self.credits = CreditsMenu(self)
         self.curr_menu = self.main_menu
+        self.game_over = GameOverMain(self)
+        self.curr_game_over = self.game_over
 
-    # Game functions
     def crash(self):
         file = 'music/game_over.mp3'
         pygame.init()
         pygame.mixer.init()
         pygame.mixer.music.load(file)
-        pygame.mixer.music.play(4)
-        self.display.fill(self.BLACK)
-        self.draw_text("Game Over", 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
-        self.window.blit(self.display, (0, 0))
-        pygame.display.update()
-        time.sleep(3)
-        self.game_loop()
+        pygame.mixer.music.play(1)
+        self.playing = False
+        self.game_over_screen = True
 
     def game_loop(self):
         import pygame
@@ -94,6 +99,7 @@ class Game:
             if snake.rect.colliderect(block.rect):
                 if abs(block.rect.bottom - snake.rect.top) < collision_tolerance:
                     self.crash()
+                    self.playing = False
                 if abs(block.rect.right - snake.rect.left) < collision_tolerance:
                     snake.rect.left = block.rect.right + 1
                     print('left')
@@ -109,9 +115,14 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running, self.playing = False, False
                 self.curr_menu.run_display = False
+                self.curr_menu.run_display = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
+                if self.game_over_screen:
+                    if event.key == pygame.K_RETURN:
+                        self.RUN_KEY = True
+                        self.START_KEY = False
                 if event.key == pygame.K_BACKSPACE:
                     self.BACK_KEY = True
                 if event.key == pygame.K_DOWN:
@@ -128,7 +139,7 @@ class Game:
 #
 
     def reset_keys(self):
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.RUN_KEY = False, False, False, False, False
 #
 
 
@@ -184,3 +195,5 @@ class Block:
         if self.rect.y > w_height:
             self.rect.y = 0 - self.height
             self.rect.x = random.randrange(west_b, east_b - self.width)
+
+
