@@ -65,11 +65,11 @@ class Game:
 
     # Game functions
     def crash(self):
-        # file = 'music/game_over.mp3'
-        # pygame.init()
-        # pygame.mixer.init()
-        # pygame.mixer.music.load(file)
-        # pygame.mixer.music.play(1)
+        file = 'music/game_over.mp3'
+        pygame.init()
+        pygame.mixer.init()
+        pygame.mixer.music.load(file)
+        pygame.mixer.music.play(1)
         self.playing = False
         self.game_over_screen = True
 
