@@ -63,6 +63,7 @@ class GameOverMain(GameOver):
             if self.state == "Start":
                 self.game.game_over_screen = False
                 self.game.playing = True
+                self.game.BLOCK_list = []
                 self.game.game_loop()
             elif self.state == "Settings":
                 self.game.curr_menu = self.game.options
