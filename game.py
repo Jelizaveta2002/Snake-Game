@@ -3,6 +3,8 @@ import pygame
 import sys
 from pygame.math import Vector2
 
+import game_over
+from game_over import *
 from menu import *
 
 # initiate pygame
@@ -33,6 +35,12 @@ snake_body_image = pygame.image.load('graphics/snake_body.png')
 block_image = pygame.image.load('graphics/block.png')
 apple_image = pygame.image.load('graphics/apple.png')
 
+
+start_img = pygame.image.load("graphics/apple.png").convert_alpha()
+exit_img = pygame.image.load("graphics/apple.png").convert_alpha()
+
+
+
 import time
 clock = pygame.time.Clock()
 
@@ -40,8 +48,8 @@ clock = pygame.time.Clock()
 class Game:
     def __init__(self):
         pygame.init()
-        self.running, self.playing = True, False
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+        self.running, self.playing, self.game_over_screen = True, False, False
+        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.RUN_KEY = False, False, False, False, False
         self.DISPLAY_W, self.DISPLAY_H = 480, 720
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
@@ -51,8 +59,9 @@ class Game:
         self.options = OptionsMenu(self)
         self.credits = CreditsMenu(self)
         self.curr_menu = self.main_menu
+        self.game_over = GameOverMain(self)
+        self.curr_game_over = self.game_over
 
-    # Game functions
     def crash(self):
         file = 'music/game_over.mp3'
         pygame.init()
@@ -99,6 +108,7 @@ class Game:
             if snake.rect.colliderect(block.rect):
                 if abs(block.rect.bottom - snake.rect.top) < collision_tolerance:
                     self.crash()
+                    self.playing = False
                 if abs(block.rect.right - snake.rect.left) < collision_tolerance:
                     snake.rect.left = block.rect.right + 1
                     print('left')
@@ -125,9 +135,14 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running, self.playing = False, False
                 self.curr_menu.run_display = False
+                self.curr_menu.run_display = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
+                if self.game_over_screen:
+                    if event.key == pygame.K_RETURN:
+                        self.RUN_KEY = True
+                        self.START_KEY = False
                 if event.key == pygame.K_BACKSPACE:
                     self.BACK_KEY = True
                 if event.key == pygame.K_DOWN:
@@ -144,7 +159,7 @@ class Game:
 #
 
     def reset_keys(self):
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.RUN_KEY = False, False, False, False, False
 #
 
 
