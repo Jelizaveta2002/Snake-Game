@@ -63,7 +63,6 @@ class Game:
 
         self.BLOCK_list = []
 
-    # Game functions
     def crash(self):
         file = 'music/game_over.mp3'
         pygame.init()
