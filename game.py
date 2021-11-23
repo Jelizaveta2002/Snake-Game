@@ -1,12 +1,9 @@
 import random
 import pygame
 import sys
+from pygame.math import Vector2
 
 from menu import *
-import time
-
-clock = pygame.time.Clock()
-
 
 # initiate pygame
 pygame.init()
@@ -32,7 +29,9 @@ pygame.display.set_caption('Runner')
 # image
 # bg=pygame.image.load()
 snake_image = pygame.image.load('graphics/snake_head.png')
+snake_body_image = pygame.image.load('graphics/snake_body.png')
 block_image = pygame.image.load('graphics/block.png')
+apple_image = pygame.image.load('graphics/apple.png')
 
 import time
 clock = pygame.time.Clock()
@@ -64,18 +63,17 @@ class Game:
         self.draw_text("Game Over", 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
         self.window.blit(self.display, (0, 0))
         pygame.display.update()
-        time.sleep(3)
+        time.sleep(2)
         self.game_loop()
 
+    # m
+
     def game_loop(self):
-        import pygame
-        file = 'music/game_loop.mp3'
-        pygame.init()
-        pygame.mixer.init()
-        pygame.mixer.music.load(file)
-        pygame.mixer.music.play(-1)
+        eaten_apples = 0
+        list_of_apples = []
         snake = Snake()
         block = Block()
+        apple = Apple()
         while self.playing:
             self.check_events()
             if self.START_KEY:
@@ -84,11 +82,18 @@ class Game:
             # Movement
             snake.update()
             block.update()
+            apple.update()
 
             # On screen
             screen.fill('#ccffcc')
             screen.blit(snake.image, (snake.rect.x, snake.rect.y))
             screen.blit(block.image, (block.rect.x, block.rect.y))
+            screen.blit(apple.image, (apple.rect.x, apple.rect.y))
+
+            if eaten_apples > 0:
+                for x in list_of_apples:
+                    new_variable = snake.rect_body.y + 26 * x
+                    screen.blit(snake.image_body, (snake.rect_body.x, new_variable))
 
             collision_tolerance = 10
             if snake.rect.colliderect(block.rect):
@@ -100,6 +105,17 @@ class Game:
                 if abs(block.rect.left - snake.rect.right) < collision_tolerance:
                     snake.rect.right = block.rect.left - 1
                     print('right')
+                if abs(block.rect.right - snake.rect_body.left) < collision_tolerance:
+                    snake.rect_body.left = block.rect.right + 1
+                if abs(block.rect.left - snake.rect_body.right) < collision_tolerance:
+                    snake.rect_body.right = block.rect.left - 1
+
+            if snake.rect.colliderect(apple.rect):
+                eaten_apples += 1
+                list_of_apples.append(eaten_apples)
+                apple.respawn()
+                print(eaten_apples)
+
 
             pygame.display.update()
             clock.tick(60)
@@ -143,20 +159,34 @@ class Snake:
         self.rect.x = int(w_width * 0.5)
         self.rect.y = int(w_height * 0.5)
 
+        self.image_body = snake_body_image
+        self.width_body = self.image_body.get_width()
+        self.height_body = self.image_body.get_height()
+
+        self.rect_body = self.image_body.get_rect()
+        self.rect_body.x = int(w_width * 0.5)
+        self.rect_body.y = int(w_height * 0.5)
+
         self.speed_x = 10
 
     def update(self):
         key_state = pygame.key.get_pressed()
         if key_state[pygame.K_LEFT]:
             self.rect.x -= 7
+            self.rect_body.x -= 7
         if key_state[pygame.K_RIGHT]:
             self.rect.x += 7
+            self.rect_body.x += 7
 
         # Check boundary
         if self.rect.left < west_b:
             self.rect.left = west_b
         if self.rect.left > east_b:
             self.rect.left = east_b
+        if self.rect_body.left < west_b:
+            self.rect_body.left = west_b
+        if self.rect_body.left > east_b:
+            self.rect_body.left = east_b
 
 
 # Boundary
@@ -184,3 +214,28 @@ class Block:
         if self.rect.y > w_height:
             self.rect.y = 0 - self.height
             self.rect.x = random.randrange(west_b, east_b - self.width)
+
+
+# Apples
+class Apple:
+    def __init__(self):
+        self.image = apple_image
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randrange(west_b, east_b)
+        self.rect.y = 200
+
+        self.speedy = 6
+
+    def update(self):
+        self.rect.y = self.rect.y + self.speedy
+
+        # Check boundary of an Apple
+        if self.rect.y > w_height:
+            self.rect.y = 0 - self.height
+            self.rect.x = random.randrange(west_b, east_b - self.width)
+
+    def respawn(self):
+        self.rect.x = random.randrange(west_b, east_b - self.width) + 1000
