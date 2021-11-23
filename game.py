@@ -67,15 +67,9 @@ class Game:
         pygame.init()
         pygame.mixer.init()
         pygame.mixer.music.load(file)
-        pygame.mixer.music.play(4)
-        self.display.fill(self.BLACK)
-        self.draw_text("Game Over", 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
-        self.window.blit(self.display, (0, 0))
-        pygame.display.update()
-        time.sleep(2)
-        self.game_loop()
-
-    # m
+        pygame.mixer.music.play(1)
+        self.playing = False
+        self.game_over_screen = True
 
     def game_loop(self):
         eaten_apples = 0
@@ -135,7 +129,7 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running, self.playing = False, False
                 self.curr_menu.run_display = False
-                self.curr_menu.run_display = False
+                self.curr_game_over.run_display = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
