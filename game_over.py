@@ -1,5 +1,9 @@
 import pygame
 
+import menu
+from menu import *
+
+
 
 class GameOver():
     def __init__(self, game):
@@ -34,7 +38,7 @@ class GameOverMain(GameOver):
             self.game.display.fill(self.game.BLACK)
             self.game.draw_text("Game Over", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
             self.game.draw_text("Continue", 20, self.startx, self.starty)
-            self.game.draw_text("Settings", 20, self.optionx, self.optiony)
+            self.game.draw_text("Exit", 20, self.optionx, self.optiony)
             self.draw_cursor()
             self.blit_screen()
 
@@ -42,7 +46,7 @@ class GameOverMain(GameOver):
         if self.game.DOWN_KEY:
             if self.state == "Start":
                 self.cursor_rect.midtop = (self.optionx + self.offset, self.optiony)
-                self.state = "Settings"
+                self.state = "Exit"
             # elif self.state == "Settings":
             #     self.cursor_rect.midtop = (self.creditsx + self.offset, self.creditsy)
             #     self.state = "Credits"
@@ -53,7 +57,7 @@ class GameOverMain(GameOver):
             # if self.state == "Start":
             #     self.cursor_rect.midtop = (self.creditsx + self.offset, self.creditsy)
             #     self.state = "Credits"
-            if self.state == "Settings":
+            if self.state == "Exit":
                 self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
                 self.state = "Start"
 
@@ -65,8 +69,9 @@ class GameOverMain(GameOver):
                 self.game.playing = True
                 self.game.BLOCK_list = []
                 self.game.game_loop()
-            elif self.state == "Settings":
-                self.game.curr_menu = self.game.options
+            elif self.state == "Exit":
+                menu.MainMenu.display_menu(self.game.main_menu)
+                self.game.playing = True
 
 
 class OptionsMenu(GameOver):
@@ -83,7 +88,7 @@ class OptionsMenu(GameOver):
             self.game.check_events()
             self.check_input()
             self.game.display.fill((0, 0, 0))
-            self.game.draw_text("Settings", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
+            self.game.draw_text("Exit", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
             self.game.draw_text("Volume", 15, self.volx, self.voly)
             self.game.draw_text("Controls", 15, self.controlsx, self.contrlosy)
             self.draw_cursor()

@@ -47,7 +47,7 @@ class Game:
 
     def __init__(self):
         pygame.init()
-        self.running, self.playing, self.game_over_screen = True, False, False
+        self.running, self.playing, self.game_over_screen= True, False, False
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.RUN_KEY = False, False, False, False, False
         self.DISPLAY_W, self.DISPLAY_H = 480, 720
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
