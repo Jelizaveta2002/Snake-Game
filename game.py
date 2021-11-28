@@ -34,7 +34,7 @@ start_img = pygame.image.load("graphics/apple.png").convert_alpha()
 exit_img = pygame.image.load("graphics/apple.png").convert_alpha()
 
 # Blocks
-block_image = [pygame.image.load('graphics/block.png'), pygame.image.load('graphics/block_2.png'), pygame.image.load('graphics/block_3.png')]
+block_image = pygame.image.load('graphics/block.png')
 SPAWNBLOCK = pygame.USEREVENT
 pygame.time.set_timer(SPAWNBLOCK, 1200)
 break_block = pygame.image.load('graphics/breakable_block.png')
@@ -262,13 +262,11 @@ east_b = 448
 # Blocks
 class Block:
     def __init__(self):
-        # self.image = random.choice(block_image)
-        self.image = block_image[0]
+        self.image = block_image
         self.width = self.image.get_width()
         self.height = self.image.get_height()
 
         self.rect = self.image.get_rect()
-        # self.rect.x = random.randrange(west_b, east_b)
         self.rect.x = 5
         self.rect.y = -100
 
