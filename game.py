@@ -27,7 +27,6 @@ pygame.display.set_caption('Runner')
 # Image
 snake_image = pygame.image.load('graphics/snake_head.png')
 snake_body_image = pygame.image.load('graphics/snake_body.png')
-block_image = pygame.image.load('graphics/block.png')
 apple_image = pygame.image.load('graphics/apple.png')
 
 
@@ -35,10 +34,11 @@ start_img = pygame.image.load("graphics/apple.png").convert_alpha()
 exit_img = pygame.image.load("graphics/apple.png").convert_alpha()
 
 # Blocks
-block_image = [pygame.image.load('graphics/block.png'), pygame.image.load('graphics/block_2.png'), pygame.image.load('graphics/block_3.png')]
+block_image = pygame.image.load('graphics/block.png')
 SPAWNBLOCK = pygame.USEREVENT
 pygame.time.set_timer(SPAWNBLOCK, 1200)
 break_block = pygame.image.load('graphics/breakable_block.png')
+space_image = pygame.image.load('graphics/space.png')
 
 import time
 clock = pygame.time.Clock()
@@ -74,36 +74,32 @@ class Game:
         self.game_over_screen = True
 
     def create_block(self):
-        block_1 = Block()
-        block_2 = Block()
-        block_3 = Block()
-        bloks = [block_1, block_2, block_3]
-        space = [65, 120, 180]
+        res = []
 
-        if bloks[0].width == 54:
-            first_space = random.choice(space)
-            bloks[1].rect.left = first_space + bloks[0].width
-            print("one block")
-        elif bloks[0].width == 114:
-            first_space = random.choice(space)
-            bloks[1].rect.left = first_space + bloks[0].width
-            print("two block")
-        elif bloks[0].width == 174:
-            first_space = random.choice(space)
-            bloks[1].rect.left = first_space + bloks[0].width
-            print("three block")
+        while len(res) != 9:
+            num = [1, 2, 3]
+            class_num = random.choice(num)
+            if len(res) == 4:
+                add_space = True
+                for val in res:
+                    if type(val) == Space:
+                        add_space = False
+                if add_space:
+                    res.append(Space())
+                    print('space')
+            if class_num == 1:
+                res.append(Block())
+            elif class_num == 2:
+                res.append(BreakableBlock())
+            elif class_num == 3:
+                res.append(Space())
 
-        if bloks[1].width == 54:
-            bloks[2].rect.left = first_space + 65 + bloks[1].width + bloks[0].width
-            print("Second one block")
-        if bloks[1].width == 114:
-            bloks[2].rect.left = first_space + 65 + bloks[1].width + bloks[0].width
-            print("Second two block")
-        if bloks[1].width == 174:
-            bloks[2].rect.left = first_space + 65 + bloks[1].width + bloks[0].width
-            print("Second three block")
+        total_l = 0
+        for elem in range(9):
+            res[elem].rect.left = total_l
+            total_l += 54
 
-        return bloks
+        return res
 
     def move_block(self, block_list):
         for block in block_list:
@@ -126,8 +122,11 @@ class Game:
                 collision_tolerance = 10
                 if snake.rect.colliderect(elem.rect):
                     if abs(elem.rect.bottom - snake.rect.top) < collision_tolerance:
-                        self.crash()
-                        self.playing = False
+                        if type(elem) == BreakableBlock:
+                            print('-apple')
+                        elif type(elem) == Block:
+                            self.crash()
+                            self.playing = False
                     if abs(elem.rect.right - snake.rect.left) < collision_tolerance:
                         snake.rect.left = elem.rect.right + 1
                         # print('left')
@@ -263,12 +262,30 @@ east_b = 448
 # Blocks
 class Block:
     def __init__(self):
-        self.image = random.choice(block_image)
+        self.image = block_image
         self.width = self.image.get_width()
         self.height = self.image.get_height()
 
         self.rect = self.image.get_rect()
-        # self.rect.x = random.randrange(west_b, east_b)
+        self.rect.x = 5
+        self.rect.y = -100
+
+        self.speedy = 5
+
+    def draw(self):
+        screen.blit(self.image, (self.rect.x, self.rect.y))
+
+    def update(self):
+        self.rect.y = self.rect.y + self.speedy
+
+
+class Space:
+    def __init__(self):
+        self.image = space_image
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+        self.rect = self.image.get_rect()
         self.rect.x = 5
         self.rect.y = -100
 
@@ -288,7 +305,6 @@ class BreakableBlock:
         self.height = self.image.get_height()
 
         self.rect = self.image.get_rect()
-        # self.rect.x = random.randrange(west_b, east_b)
         self.rect.x = 5
         self.rect.y = -100
 
