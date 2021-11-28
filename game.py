@@ -75,10 +75,10 @@ class Game:
 
     def create_block(self):
         block_1 = Block()
-        block_2 = Block()
+        block_2 = BreakableBlock()
         block_3 = Block()
         bloks = [block_1, block_2, block_3]
-        space = [65, 120, 180]
+        space = [65, 120]
 
         if bloks[0].width == 54:
             first_space = random.choice(space)
@@ -126,8 +126,11 @@ class Game:
                 collision_tolerance = 10
                 if snake.rect.colliderect(elem.rect):
                     if abs(elem.rect.bottom - snake.rect.top) < collision_tolerance:
-                        self.crash()
-                        self.playing = False
+                        if type(elem) == BreakableBlock:
+                            print('-apple')
+                        else:
+                            self.crash()
+                            self.playing = False
                     if abs(elem.rect.right - snake.rect.left) < collision_tolerance:
                         snake.rect.left = elem.rect.right + 1
                         # print('left')
