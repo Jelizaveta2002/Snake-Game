@@ -49,7 +49,7 @@ class Game:
     def __init__(self):
         pygame.init()
         self.running, self.playing, self.game_over_screen = True, False, False
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.RUN_KEY = False, False, False, False, False
+        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.RUN_KEY, self.EXIT_KEY = False, False, False, False, False, False
         self.DISPLAY_W, self.DISPLAY_H = 480, 720
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
@@ -123,7 +123,7 @@ class Game:
                 if snake.rect.colliderect(elem.rect):
                     if abs(elem.rect.bottom - snake.rect.top) < collision_tolerance:
                         if type(elem) == BreakableBlock:
-                            print('-apple')
+                            print('-nope')
                         elif type(elem) == Block:
                             self.crash()
                             self.playing = False
@@ -181,10 +181,6 @@ class Game:
 
     def check_events(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running, self.playing = False, False
-                self.curr_menu.run_display = False
-                self.curr_game_over.run_display = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
@@ -194,6 +190,13 @@ class Game:
                         self.START_KEY = False
                 if event.key == pygame.K_BACKSPACE:
                     self.BACK_KEY = True
+                if event.key == pygame.K_ESCAPE:
+                    self.EXIT_KEY = True
+                    self.curr_menu.run_display = False
+                    self.curr_game_over.run_display = False
+                    self.running, self.playing = False, False
+                    quit()
+                    pygame.quit()
                 if event.key == pygame.K_DOWN:
                     self.DOWN_KEY = True
                 if event.key == pygame.K_UP:
@@ -315,6 +318,9 @@ class BreakableBlock:
 
     def update(self):
         self.rect.y = self.rect.y + self.speedy
+
+    def respawn(self):
+        self.rect.x = random.randrange(west_b, east_b - self.width) + 1000
 
 
 # Apples
