@@ -191,6 +191,10 @@ class Game:
 
     def check_events(self):
         for event in pygame.event.get():
+            # if event.type == pygame.QUIT:
+            #     self.curr_menu.run_display = False
+            #     self.curr_game_over.run_display = False
+            #     self.running, self.playing = False, False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
