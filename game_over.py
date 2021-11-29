@@ -70,8 +70,10 @@ class GameOverMain(GameOver):
                 self.game.BLOCK_list = []
                 self.game.game_loop()
             elif self.state == "Exit":
-                menu.MainMenu.display_menu(self.game.main_menu)
-                self.game.playing = True
+                self.game.game_over_screen = False
+                self.game.curr_menu.display_menu()
+                self.game.BLOCK_list = []
+                self.game.game_loop()
 
 
 class OptionsMenu(GameOver):
