@@ -162,7 +162,6 @@ class Game:
             # Movement
             snake.update()
             self.check_crash(snake)
-            # block.update()
             apple.update()
             breakable_block.update()
 
