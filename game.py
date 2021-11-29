@@ -61,7 +61,8 @@ class Game:
         self.curr_menu = self.main_menu
         self.game_over = GameOverMain(self)
         self.curr_game_over = self.game_over
-
+        self.eaten_apples = 0
+        self.list_of_apples = []
         self.BLOCK_list = []
 
     def crash(self):
@@ -124,6 +125,14 @@ class Game:
                     if abs(elem.rect.bottom - snake.rect.top) < collision_tolerance:
                         if type(elem) == BreakableBlock:
                             print('-apple')
+                            elem.respawn()
+                            self.list_of_apples = self.list_of_apples[:-1]
+                            self.eaten_apples -= 1
+                            # for x in self.list_of_apples:
+                            #     new_variable = snake.rect_body.y + 26 * x
+                            #     screen.blit(snake.image_body, (snake.rect_body.x, new_variable))
+                            if self.eaten_apples < 0:
+                                self.crash()
                         elif type(elem) == Block:
                             self.crash()
                             self.playing = False
@@ -139,11 +148,12 @@ class Game:
                         snake.rect_body.right = elem.rect.left - 1
 
     def game_loop(self):
-        eaten_apples = 0
-        list_of_apples = []
+        self.eaten_apples = 0
+        self.list_of_apples = []
         snake = Snake()
         # block = Block()
         apple = Apple()
+        breakable_block = BreakableBlock()
         while self.playing:
             self.check_events()
             if self.START_KEY:
@@ -154,6 +164,7 @@ class Game:
             self.check_crash(snake)
             # block.update()
             apple.update()
+            breakable_block.update()
 
             # On screen
             screen.fill('#ccffcc')
@@ -165,16 +176,16 @@ class Game:
             self.draw_block(self.BLOCK_list)
             self.remove_block(self.BLOCK_list)
 
-            if eaten_apples > 0:
-                for x in list_of_apples:
+            if self.eaten_apples > -1:
+                for x in self.list_of_apples:
                     new_variable = snake.rect_body.y + 26 * x
                     screen.blit(snake.image_body, (snake.rect_body.x, new_variable))
 
             if snake.rect.colliderect(apple.rect):
-                eaten_apples += 1
-                list_of_apples.append(eaten_apples)
+                self.eaten_apples += 1
+                self.list_of_apples.append(self.eaten_apples)
                 apple.respawn()
-                print(eaten_apples)
+                print(self.eaten_apples)
 
             pygame.display.update()
             clock.tick(60)
@@ -315,6 +326,9 @@ class BreakableBlock:
 
     def update(self):
         self.rect.y = self.rect.y + self.speedy
+
+    def respawn(self):
+        self.rect.x = random.randrange(west_b, east_b - self.width) + 1000
 
 
 # Apples
