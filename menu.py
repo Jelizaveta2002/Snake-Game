@@ -72,6 +72,12 @@ class MainMenu(Menu):
             elif self.state == "Credits":
                 self.game.curr_menu = self.game.credits
             self.run_display = False
+        elif self.game.paused is True:
+            self.game.curr_menu = self.game.pause
+            self.run_display = False
+        elif self.game.g_over is True:
+            self.game.curr_menu = self.game.game_over
+            self.run_display = False
 
 
 class OptionsMenu(Menu):
@@ -87,7 +93,7 @@ class OptionsMenu(Menu):
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            self.game.display.fill((0, 0, 0))
+            self.game.display.fill(self.game.BLACK)
             self.game.draw_text("Settings", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
             self.game.draw_text("Volume", 15, self.volx, self.voly)
             self.game.draw_text("Controls", 15, self.controlsx, self.contrlosy)
@@ -124,3 +130,75 @@ class CreditsMenu(Menu):
             self.game.draw_text("Credits", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
             self.game.draw_text("Made by me", 15, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 10)
             self.blit_screen()
+
+
+class PauseMenu(Menu):
+    def __init__(self, game):
+        Menu.__init__(self, game)
+        self.state = "Pause"
+        self.volx, self.voly = self.mid_w, self.mid_h + 20
+        self.controlsx, self.contrlosy = self.mid_w, self.mid_h + 40
+        self.cursor_rect.midtop = (self.volx + self.offset, self.voly)
+
+    def display_menu(self):
+        self.run_display = True
+        while self.run_display:
+            self.game.check_events()
+            self.check_input()
+            self.game.display.fill(self.game.BLACK)
+            self.game.draw_text("Paused", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
+            self.game.draw_text("Continue", 15, self.volx, self.voly)
+            self.draw_cursor()
+            self.blit_screen()
+
+    def check_input(self):
+        if self.game.BACK_KEY:
+            self.game.curr_menu = self.game.main_menu
+            self.run_display = False
+        elif self.game.START_KEY:
+            self.run_display = False
+            self.game.playing = True
+            self.game.paused = False
+            self.game.curr_menu = self.game.main_menu
+
+
+class GameOverMenu(Menu):
+    def __init__(self, game):
+        Menu.__init__(self, game)
+        self.state = "Play Again"
+        self.volx, self.voly = self.mid_w, self.mid_h + 20
+        self.controlsx, self.contrlosy = self.mid_w, self.mid_h + 40
+        self.cursor_rect.midtop = (self.volx + self.offset, self.voly)
+
+    def display_menu(self):
+        self.run_display = True
+        while self.run_display:
+            self.game.check_events()
+            self.check_input()
+            self.game.display.fill(self.game.BLACK)
+            self.game.draw_text("Game Over", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
+            self.game.draw_text("Play Again", 15, self.volx, self.voly)
+            self.game.draw_text("Exit", 15, self.controlsx, self.contrlosy)
+            self.draw_cursor()
+            self.blit_screen()
+
+    def check_input(self):
+        if self.game.BACK_KEY:
+            self.game.curr_menu = self.game.main_menu
+            self.run_display = False
+        elif self.game.UP_KEY or self.game.DOWN_KEY:
+            if self.state == "Play Again":
+                self.state = "Exit"
+                self.cursor_rect.midtop = (self.controlsx + self.offset, self.contrlosy)
+            elif self.state == "Exit":
+                self.state = "Play Again"
+                self.cursor_rect.midtop = (self.volx + self.offset, self.voly)
+        elif self.game.START_KEY:
+            if self.state == "Play Again":
+                self.game.playing = True
+                self.game.BLOCK_list = []
+            elif self.state == "Exit":
+                pass
+            self.run_display = False
+            self.game.g_over = False
+            self.game.curr_menu = self.game.main_menu
