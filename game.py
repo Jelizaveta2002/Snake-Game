@@ -58,6 +58,7 @@ class Game:
         self.main_menu = MainMenu(self)
         self.options = OptionsMenu(self)
         self.credits = CreditsMenu(self)
+        self.instruction = InstructionMenu(self)
         self.curr_menu = self.main_menu
         self.game_over = GameOverMenu(self)
         self.pause = PauseMenu(self)
