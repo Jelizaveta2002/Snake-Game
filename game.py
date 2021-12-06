@@ -68,6 +68,11 @@ class Game:
         self.BLOCK_list = []
         self.paused = False
         self.g_over = False
+        self.passed_time = 0
+        self.timer_started = False
+        self.start_time = 0
+        self.controller = 1
+        self.score_list = []
 
     def crash(self):
         file = 'music/game_over.mp3'
@@ -76,8 +81,11 @@ class Game:
         pygame.mixer.music.load(file)
         pygame.mixer.music.play(1)
         self.playing = False
+        self.passed_time = pygame.time.get_ticks() - self.start_time
+        print(self.passed_time)
         self.paused = False
         self.g_over = True
+        self.controller = 2
 
     def create_block(self):
         res = []
@@ -152,12 +160,17 @@ class Game:
                         snake.rect_body.right = elem.rect.left - 1
 
     def game_loop(self):
-        if self.playing:
+        if self.playing is True and self.controller == 5:
+            self.start_time = self.score_list[-1]
+            self.score_list.append(self.start_time)
+        if self.playing is True and self.controller == 2 or self.controller == 1:
             file = 'music/game_loop.mp3'
             pygame.init()
             pygame.mixer.init()
             pygame.mixer.music.load(file)
             pygame.mixer.music.play(1)
+            self.start_time = pygame.time.get_ticks()
+            self.score_list.append(self.start_time)
         self.eaten_apples = 0
         self.list_of_apples = []
         snake = Snake()
@@ -210,6 +223,7 @@ class Game:
                     self.playing = False
                     self.paused = True
                     self.g_over = False
+                    self.controller = 5
                     # self.curr_menu = self.pause
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
