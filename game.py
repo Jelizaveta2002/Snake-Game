@@ -151,6 +151,12 @@ class Game:
                         snake.rect_body.right = elem.rect.left - 1
 
     def game_loop(self):
+        if self.playing:
+            file = 'music/game_loop.mp3'
+            pygame.init()
+            pygame.mixer.init()
+            pygame.mixer.music.load(file)
+            pygame.mixer.music.play(1)
         self.eaten_apples = 0
         self.list_of_apples = []
         snake = Snake()
