@@ -194,10 +194,10 @@ class Game:
 
     def check_events(self):
         for event in pygame.event.get():
-            # if event.type == pygame.QUIT:
-            #     self.curr_menu.run_display = False
-            #     self.curr_game_over.run_display = False
-            #     self.running, self.playing = False, False
+            if event.type == pygame.QUIT:
+                self.curr_menu.run_display = False
+                self.curr_game_over.run_display = False
+                self.running, self.playing = False, False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     self.playing = False
@@ -220,7 +220,7 @@ class Game:
                     self.UP_KEY = True
             if event.type == SPAWNBLOCK and self.playing is True:
                 self.BLOCK_list.append(self.create_block())
-                print(self.BLOCK_list)
+                # print(self.BLOCK_list)
 
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)

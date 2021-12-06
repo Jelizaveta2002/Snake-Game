@@ -36,7 +36,7 @@ class MainMenu(Menu):
             self.game.draw_text("Main Menu", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
             self.game.draw_text("Start Game", 20, self.startx, self.starty)
             self.game.draw_text("Settings", 20, self.optionx, self.optiony)
-            self.game.draw_text("Credits", 20, self.creditsx, self.creditsy)
+            self.game.draw_text("About us", 20, self.creditsx, self.creditsy)
             self.draw_cursor()
             self.blit_screen()
 
@@ -127,8 +127,11 @@ class CreditsMenu(Menu):
                 self.game.curr_menu = self.game.main_menu
                 self.run_display = False
             self.game.display.fill(self.game.BLACK)
-            self.game.draw_text("Credits", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
-            self.game.draw_text("Made by me", 15, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 10)
+            self.game.draw_text("About us", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
+            self.game.draw_text("Developers", 15, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 20)
+            self.game.draw_text("Liza Voloshina", 15, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 50)
+            self.game.draw_text("Maksimilian Tsenkman", 15, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 70)
+            self.game.draw_text("Kristina Soboleva", 15, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 90)
             self.blit_screen()
 
 
