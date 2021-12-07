@@ -87,9 +87,12 @@ class Game:
         self.passed_time = pygame.time.get_ticks() - self.start_time
         score = str(int(self.passed_time // 100) / 10)
         label = font.render(f"Time:{score} sec", False, (250, 150, 140))
-        screen.blit(label, (50, 50))
+        label_2 = font.render(f"Apples:{self.eaten_apples} tk", False, (250, 150, 140))
+        screen.blit(label, (20, 50))
+        screen.blit(label_2, (270, 50))
         pg.display.flip()
         clock.tick(60)
+
 
     def crash(self):
         file = 'music/game_over.mp3'
