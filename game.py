@@ -48,7 +48,7 @@ class Game:
     def __init__(self):
         pygame.init()
         self.running, self.playing, self.game_over_screen = True, False, False
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.RUN_KEY, self.EXIT_KEY = False, False, False, False, False, False
+        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.EXIT_KEY = False, False, False, False, False
         self.DISPLAY_W, self.DISPLAY_H = 480, 720
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
@@ -57,12 +57,21 @@ class Game:
         self.main_menu = MainMenu(self)
         self.options = OptionsMenu(self)
         self.credits = CreditsMenu(self)
+        self.instruction = InstructionMenu(self)
         self.curr_menu = self.main_menu
-        self.game_over = GameOverMain(self)
+        self.game_over = GameOverMenu(self)
+        self.pause = PauseMenu(self)
         self.curr_game_over = self.game_over
         self.eaten_apples = 0
         self.list_of_apples = []
         self.BLOCK_list = []
+        self.paused = False
+        self.g_over = False
+        self.passed_time = 0
+        self.timer_started = False
+        self.start_time = 0
+        self.controller = 1
+        self.score_list = []
 
     def crash(self):
         file = 'music/game_over.mp3'
@@ -71,11 +80,14 @@ class Game:
         pygame.mixer.music.load(file)
         pygame.mixer.music.play(1)
         self.playing = False
-        self.game_over_screen = True
+        self.passed_time = pygame.time.get_ticks() - self.start_time
+        print(self.passed_time)
+        self.paused = False
+        self.g_over = True
+        self.controller = 2
 
     def create_block(self):
         res = []
-
         while len(res) != 9:
             num = [1, 2, 3]
             class_num = random.choice(num)
@@ -147,6 +159,17 @@ class Game:
                         snake.rect_body.right = elem.rect.left - 1
 
     def game_loop(self):
+        if self.playing is True and self.controller == 5:
+            self.start_time = self.score_list[-1]
+            self.score_list.append(self.start_time)
+        if self.playing is True and self.controller == 2 or self.controller == 1:
+            file = 'music/game_loop.mp3'
+            pygame.init()
+            pygame.mixer.init()
+            pygame.mixer.music.load(file)
+            pygame.mixer.music.play(1)
+            self.start_time = pygame.time.get_ticks()
+            self.score_list.append(self.start_time)
         self.eaten_apples = 0
         self.list_of_apples = []
         snake = Snake()
@@ -212,21 +235,27 @@ class Game:
             pygame.display.update()
             clock.tick(60)
 
+
     def check_events(self):
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.curr_menu.run_display = False
+                self.curr_game_over.run_display = False
+                self.running, self.playing = False, False
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    self.playing = False
+                    self.paused = True
+                    self.g_over = False
+                    self.controller = 5
+                    # self.curr_menu = self.pause
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
-                if self.game_over_screen:
-                    if event.key == pygame.K_RETURN:
-                        self.RUN_KEY = True
-                        self.START_KEY = False
                 if event.key == pygame.K_BACKSPACE:
                     self.BACK_KEY = True
                 if event.key == pygame.K_ESCAPE:
                     self.EXIT_KEY = True
                     self.curr_menu.run_display = False
-                    self.curr_game_over.run_display = False
                     self.running, self.playing = False, False
                     quit()
                     pygame.quit()
@@ -234,9 +263,9 @@ class Game:
                     self.DOWN_KEY = True
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
-            if event.type == SPAWNBLOCK and self.playing == True:
+            if event.type == SPAWNBLOCK and self.playing is True:
                 self.BLOCK_list.append(self.create_block())
-                print(self.BLOCK_list)
+                # print(self.BLOCK_list)
 
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
@@ -246,7 +275,7 @@ class Game:
         self.display.blit(text_surface, text_rect)
 
     def reset_keys(self):
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.RUN_KEY = False, False, False, False, False
+        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
 
 
 class Snake:
