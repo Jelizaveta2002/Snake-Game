@@ -28,7 +28,7 @@ pygame.display.set_caption('Runner')
 snake_image = pygame.image.load('graphics/snake_head.png')
 snake_body_image = pygame.image.load('graphics/snake_body.png')
 apple_image = pygame.image.load('graphics/apple.png')
-
+bullet_image = pygame.image.load('graphics/bullet.png')
 
 start_img = pygame.image.load("graphics/apple.png").convert_alpha()
 exit_img = pygame.image.load("graphics/apple.png").convert_alpha()
@@ -196,6 +196,7 @@ class Game:
         snake = Snake()
         # block = Block()
         apple = Apple()
+        bullet = Bullet()
         breakable_block = BreakableBlock()
         while self.playing:
             self.display_score()
@@ -209,7 +210,7 @@ class Game:
             self.check_crash(snake)
             apple.update()
             breakable_block.update()
-
+            bullet.update()
             # On screen
             screen.fill('#ccffcc')
             screen.blit(snake.image, (snake.rect.x, snake.rect.y))
@@ -230,6 +231,29 @@ class Game:
                 self.list_of_apples.append(self.eaten_apples)
                 apple.respawn()
                 print(self.eaten_apples)
+
+            key_state = pygame.key.get_pressed()
+            if key_state[pygame.K_SPACE]:
+                bullet.rect.y -= 100
+                if bullet.rect.y < -400:
+                    bullet.rect.y = snake.rect.y + 10
+                    bullet.rect.x = snake.rect.x
+            # bullet.shoot()
+                for smth in self.BLOCK_list:
+                    for block in smth:
+                        if type(block) == Block:
+                            if bullet.rect.colliderect(block.rect):
+                                block.rect.x = random.randrange(west_b, east_b) + 1000
+                                bullet.rect.y = snake.rect.y + 10
+                                bullet.rect.x = snake.rect.x
+
+                screen.blit(bullet.image, (bullet.rect.x, bullet.rect.y))
+            # for smth in self.BLOCK_list:
+            #     for block in smth:
+            #         if type(block) == BreakableBlock:
+            #             if bullet.rect.colliderect(block.rect):
+            #                 block.rect.x = random.randrange(west_b, east_b) + 1000
+            #                 bullet.rect.y = snake.rect.y + 10
 
             pygame.display.update()
 
@@ -281,7 +305,6 @@ class Snake:
         self.image = snake_image
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-
         self.rect = self.image.get_rect()
         self.rect.x = int(w_width * 0.5)
         self.rect.y = int(w_height * 0.5)
@@ -289,7 +312,6 @@ class Snake:
         self.image_body = snake_body_image
         self.width_body = self.image_body.get_width()
         self.height_body = self.image_body.get_height()
-
         self.rect_body = self.image_body.get_rect()
         self.rect_body.x = int(w_width * 0.5)
         self.rect_body.y = int(w_height * 0.5)
@@ -405,3 +427,40 @@ class Apple:
 
     def respawn(self):
         self.rect.x = random.randrange(west_b, east_b - self.width) + 1000
+
+
+snaky = Snake()
+
+
+class Bullet:
+    def __init__(self):
+        self.image = bullet_image
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+        self.rect = self.image.get_rect()
+        self.rect.x = int(w_width * 0.5)
+        self.rect.y = int(w_height * 0.5) + 10
+
+        self.speedy = 200
+
+    def update(self):
+        key_state = pygame.key.get_pressed()
+        if key_state[pygame.K_LEFT]:
+            self.rect.x -= 5
+        if key_state[pygame.K_RIGHT]:
+            self.rect.x += 5
+
+        # Check boundary
+        if self.rect.left < west_b:
+            self.rect.left = west_b
+        if self.rect.left > east_b:
+            self.rect.left = east_b
+
+    # def shoot(self):
+    #     key_state = pygame.key.get_pressed()
+    #     if key_state[pygame.K_SPACE]:
+    #         self.rect.y -= self.speedy
+    #     if self.rect.y < -400:
+    #         self.rect.y = int(w_height * 0.5) + 10
+    #         self.rect.x = int(w_width * 0.5)
