@@ -6,7 +6,7 @@ from pygame.math import Vector2
 import game_over
 from game_over import *
 from menu import *
-
+import pygame as pg
 # initiate pygame
 pygame.init()
 
@@ -44,8 +44,12 @@ import time
 clock = pygame.time.Clock()
 
 
-class Game:
+font = pygame.font.Font("freesansbold.ttf", 32)
+textX = 10
+textY = 10
 
+
+class Game:
     def __init__(self):
         pygame.init()
         self.running, self.playing, self.game_over_screen = True, False, False
@@ -73,6 +77,19 @@ class Game:
         self.start_time = 0
         self.controller = 1
         self.score_list = []
+
+    def blit_screen(self):
+        self.window.blit(self.display, (0, 0))
+        pygame.display.update()
+        self.reset_keys()
+
+    def display_score(self):
+        self.passed_time = pygame.time.get_ticks() - self.start_time
+        score = str(int(self.passed_time // 100) / 10)
+        label = font.render(f"Time:{score} sec", False, (250, 150, 140))
+        screen.blit(label, (50, 50))
+        pg.display.flip()
+        clock.tick(60)
 
     def crash(self):
         file = 'music/game_over.mp3'
@@ -178,7 +195,9 @@ class Game:
         apple = Apple()
         breakable_block = BreakableBlock()
         while self.playing:
+            self.display_score()
             self.check_events()
+            #self.draw_text(f"Time {str(self.passed_time)} ms",  20, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 90)
             if self.START_KEY:
                 self.playing = False
 
@@ -210,8 +229,6 @@ class Game:
                 print(self.eaten_apples)
 
             pygame.display.update()
-            clock.tick(60)
-
 
     def check_events(self):
         for event in pygame.event.get():
