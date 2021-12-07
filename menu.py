@@ -206,7 +206,7 @@ class GameOverMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill(self.game.BLACK)
-            self.game.draw_text(f"SCORE {str(self.game.passed_time)} ms",  20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 90)
+            self.game.draw_text(f"SCORE {str(int(self.game.passed_time // 1000))} sec", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 90)
             self.game.draw_text("Game Over", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
             self.game.draw_text("Play Again", 15, self.volx, self.voly)
             self.game.draw_text("Exit", 15, self.controlsx, self.contrlosy)
