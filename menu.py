@@ -232,4 +232,5 @@ class GameOverMenu(Menu):
                 pass
             self.run_display = False
             self.game.g_over = False
+            self.game.BLOCK_list = []
             self.game.curr_menu = self.game.main_menu
