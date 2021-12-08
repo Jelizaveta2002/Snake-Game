@@ -51,6 +51,7 @@ textY = 10
 
 class Game:
     def __init__(self):
+        self.change = False
         pygame.init()
         self.running, self.playing, self.game_over_screen = True, False, False
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.EXIT_KEY = False, False, False, False, False
@@ -77,6 +78,8 @@ class Game:
         self.start_time = 0
         self.controller = 1
         self.score_list = []
+        self.increase_s = 20
+        self.decrease_s = 40
 
     def blit_screen(self):
         self.window.blit(self.display, (0, 0))
@@ -92,6 +95,7 @@ class Game:
         screen.blit(label_2, (270, 50))
         pg.display.flip()
         clock.tick(60)
+        return score
 
 
     def crash(self):
@@ -135,16 +139,21 @@ class Game:
         return res
 
     def move_block(self, block_list):
-        for block in block_list:
-            for each in block:
-                each.update()
+        for block in self.BLOCK_list:
+            for elem in block:
+                if self.change:
+                    elem.speedy = 8
+                    elem.update()
+                else:
+                    elem.speedy = 5
+                    elem.update()
 
     def draw_block(self, block_list):
         for block in block_list:
             for each in block:
                 each.draw()
 
-    def remove_block(self, block_list):
+    def remove_block(self):
         for block in self.BLOCK_list:
             if block[0].rect.y > w_height:
                 self.BLOCK_list.remove(block)
@@ -191,13 +200,17 @@ class Game:
             pygame.mixer.music.play(1)
             self.start_time = pygame.time.get_ticks()
             self.score_list.append(self.start_time)
+
         self.eaten_apples = 0
         self.list_of_apples = []
         snake = Snake()
-        # block = Block()
+
         apple = Apple()
         bullet = Bullet()
         breakable_block = BreakableBlock()
+
+
+
         while self.playing:
             self.display_score()
             self.check_events()
@@ -219,7 +232,19 @@ class Game:
             # Blocks
             self.move_block(self.BLOCK_list)
             self.draw_block(self.BLOCK_list)
-            self.remove_block(self.BLOCK_list)
+            self.remove_block()
+
+            if (self.passed_time // 100 / 10) > self.increase_s:
+                self.change = True
+                apple.speedy = 8
+                snake.move = 7
+                self.increase_s += 40
+
+            elif (self.passed_time // 100 / 10) > self.decrease_s:
+                self.change = False
+                apple.speedy = 6
+                snake.move = 7
+                self.decrease_s += 40
 
             if self.eaten_apples > -1:
                 for x in self.list_of_apples:
@@ -316,16 +341,19 @@ class Snake:
         self.rect_body.x = int(w_width * 0.5)
         self.rect_body.y = int(w_height * 0.5)
 
+        self.move = 5
+
         self.speed_x = 10
 
     def update(self):
+
         key_state = pygame.key.get_pressed()
         if key_state[pygame.K_LEFT]:
-            self.rect.x -= 5
-            self.rect_body.x -= 5
+            self.rect.x -= self.move
+            self.rect_body.x -= self.move
         if key_state[pygame.K_RIGHT]:
-            self.rect.x += 5
-            self.rect_body.x += 5
+            self.rect.x += self.move
+            self.rect_body.x += self.move
 
         # Check boundary
         if self.rect.left < west_b:
