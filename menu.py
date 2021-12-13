@@ -77,11 +77,15 @@ class MainMenu(Menu):
         if self.game.START_KEY:
             if self.state == "Start":
                 self.game.playing = True
+                self.game.start = True
             elif self.state == "Settings":
+                self.game.start = False
                 self.game.curr_menu = self.game.options
             elif self.state == "Credits":
+                self.game.start = False
                 self.game.curr_menu = self.game.credits
             elif self.state == "Instruction":
+                self.game.start = False
                 self.game.curr_menu = self.game.instruction
             self.run_display = False
         elif self.game.paused is True:
@@ -140,7 +144,7 @@ class InstructionMenu(Menu):
                 self.run_display = False
             self.game.display.fill(self.game.BLACK)
             self.game.draw_text("Instruction", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
-            self.game.draw_text("Keys", 15, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 20)
+            self.game.display.blit(pygame.image.load('graphics/instruction.png'), (70, 360))
             self.blit_screen()
 
 
@@ -191,6 +195,7 @@ class PauseMenu(Menu):
             self.run_display = False
             self.game.playing = True
             self.game.paused = False
+            self.game.font_color = False
             self.game.change = False
             self.game.increase_s = 20
             self.game.decrease_s = 40
@@ -239,6 +244,7 @@ class GameOverMenu(Menu):
             self.game.g_over = False
             self.game.BLOCK_list = []
             self.game.change = False
+            self.game.font_color = False
             self.game.increase_s = 20
             self.game.decrease_s = 40
             self.game.curr_menu = self.game.main_menu
