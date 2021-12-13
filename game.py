@@ -206,7 +206,7 @@ class Game:
 
             # Movement
             snake.update()
-            # self.check_crash(snake)
+            self.check_crash(snake)
             apple.update()
             breakable_block.update()
             bullet.update()
