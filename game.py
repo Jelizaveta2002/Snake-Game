@@ -6,6 +6,7 @@ pygame.init()
 
 # Game name
 pygame.display.set_caption('Snake')
+pygame.display.set_icon(pygame.image.load('graphics/snake_head.png'))
 
 # initiate pygame
 pygame.init()
@@ -42,6 +43,7 @@ textY = 10
 
 class Game:
     def __init__(self):
+        self.music_play = True
         self.start = False
         self.change = False
         pygame.init()
@@ -91,11 +93,13 @@ class Game:
         return score
 
     def crash(self):
-        file = 'music/game_over.mp3'
-        pygame.init()
-        pygame.mixer.init()
-        pygame.mixer.music.load(file)
-        pygame.mixer.music.play(1)
+        if self.music_play:
+            file = 'music/game_over.mp3'
+            pygame.init()
+            pygame.mixer.init()
+            pygame.mixer.music.load(file)
+            pygame.mixer.music.play(1)
+
         self.playing = False
         self.passed_time = pygame.time.get_ticks() - self.start_time
         self.paused = False
@@ -133,7 +137,7 @@ class Game:
         for block in self.BLOCK_list:
             for elem in block:
                 if self.change:
-                    elem.speedy = 8
+                    elem.speedy = 9
                     elem.update()
                 else:
                     elem.speedy = 5
@@ -181,11 +185,12 @@ class Game:
             self.start_time = self.score_list[-1]
             self.score_list.append(self.start_time)
         if self.playing and self.controller == 2 or self.controller == 1:
-            file = 'music/musiccc.mp3'
-            pygame.init()
-            pygame.mixer.init()
-            pygame.mixer.music.load(file)
-            pygame.mixer.music.play(-1)
+            if self.music_play:
+                file = 'music/musiccc.mp3'
+                pygame.init()
+                pygame.mixer.init()
+                pygame.mixer.music.load(file)
+                pygame.mixer.music.play(-1)
             self.start_time = pygame.time.get_ticks()
             self.score_list.append(self.start_time)
 
@@ -256,7 +261,6 @@ class Game:
                     if bullet.rect.y < -400:
                         bullet.rect.y = snake.rect.y + 10
                         bullet.rect.x = snake.rect.x
-            # bullet.shoot()
                     for smth in self.BLOCK_list:
                         for block in smth:
                             if type(block) == Block:
@@ -291,6 +295,7 @@ class Game:
                 if event.key == pygame.K_p:
                     self.playing = False
                     self.paused = True
+                    pygame.mixer.music.pause()
                     self.g_over = False
                     self.controller = 5
 
