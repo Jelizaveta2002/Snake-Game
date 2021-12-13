@@ -274,7 +274,7 @@ class Game:
 
             elif self.font_color is True:
                 s = pygame.Surface((480, 720))
-                s.set_alpha(128)  # alpha level
+                s.set_alpha(100)  # alpha level
                 s.fill((255, 0, 0))  # this fills the entire surface
                 screen.blit(s, (0, 0))
 
