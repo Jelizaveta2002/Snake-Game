@@ -180,11 +180,11 @@ class Game:
             self.start_time = self.score_list[-1]
             self.score_list.append(self.start_time)
         if self.playing is True and self.controller == 2 or self.controller == 1:
-            file = 'music/game_loop.mp3'
+            file = 'music/musiccc.mp3'
             pygame.init()
             pygame.mixer.init()
             pygame.mixer.music.load(file)
-            pygame.mixer.music.play(1)
+            pygame.mixer.music.play(-1)
             self.start_time = pygame.time.get_ticks()
             self.score_list.append(self.start_time)
 
