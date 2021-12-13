@@ -248,8 +248,8 @@ class Game:
                 self.list_of_apples.append(self.eaten_apples)
                 apple.respawn()
 
-
             key_state = pygame.key.get_pressed()
+
             if key_state[pygame.K_SPACE]:
                 bullet.rect.y -= 100
                 if bullet.rect.y < -400:
