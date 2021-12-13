@@ -15,8 +15,6 @@ w_height = 720
 w_width = 480
 screen = pygame.display.set_mode((w_width, w_height))
 
-# Game name
-pygame.display.set_caption('Runner')
 
 # Image
 snake_image = pygame.image.load('graphics/snake_head.png')
@@ -202,12 +200,13 @@ class Game:
             self.display_score()
             self.check_events()
 
+
             if self.START_KEY:
                 self.playing = False
 
             # Movement
             snake.update()
-            self.check_crash(snake)
+            # self.check_crash(snake)
             apple.update()
             breakable_block.update()
             bullet.update()
@@ -216,6 +215,7 @@ class Game:
                 screen.fill("#ccffcc")
             elif self.font_color is True:
                 screen.fill((0, 0, 0))
+
             screen.blit(snake.image, (snake.rect.x, snake.rect.y))
             screen.blit(apple.image, (apple.rect.x, apple.rect.y))
 
@@ -265,12 +265,19 @@ class Game:
                                     bullet.rect.x = snake.rect.x
 
                     screen.blit(bullet.image, (bullet.rect.x, bullet.rect.y))
-            # for smth in self.BLOCK_list:
-            #     for block in smth:
-            #         if type(block) == BreakableBlock:
-            #             if bullet.rect.colliderect(block.rect):
-            #                 block.rect.x = random.randrange(west_b, east_b) + 1000
-            #                 bullet.rect.y = snake.rect.y + 10
+
+            if self.font_color is False:
+                s = pygame.Surface((480, 720))
+                s.set_alpha(0)  # alpha level
+                s.fill((0, 0, 0))  # this fills the entire surface
+                screen.blit(s, (0, 0))
+
+            elif self.font_color is True:
+                s = pygame.Surface((480, 720))
+                s.set_alpha(128)  # alpha level
+                s.fill((255, 0, 0))  # this fills the entire surface
+                screen.blit(s, (0, 0))
+
 
             pygame.display.update()
 
