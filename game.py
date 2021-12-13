@@ -295,6 +295,7 @@ class Game:
                 if event.key == pygame.K_p:
                     self.playing = False
                     self.paused = True
+                    pygame.mixer.music.pause()
                     self.g_over = False
                     self.controller = 5
 

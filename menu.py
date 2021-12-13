@@ -205,6 +205,7 @@ class PauseMenu(Menu):
             self.game.curr_menu = self.game.main_menu
             self.run_display = False
         elif self.game.START_KEY:
+            pygame.mixer.music.unpause()
             self.run_display = False
             self.game.playing = True
             self.game.paused = False
