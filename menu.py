@@ -190,6 +190,7 @@ class PauseMenu(Menu):
             self.run_display = False
             self.game.playing = True
             self.game.paused = False
+            self.game.font_color = False
             self.game.change = False
             self.game.increase_s = 20
             self.game.decrease_s = 40
@@ -238,6 +239,7 @@ class GameOverMenu(Menu):
             self.game.g_over = False
             self.game.BLOCK_list = []
             self.game.change = False
+            self.game.font_color = False
             self.game.increase_s = 20
             self.game.decrease_s = 40
             self.game.curr_menu = self.game.main_menu

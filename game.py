@@ -1,11 +1,4 @@
 import random
-import pygame
-import sys
-from pygame.math import Vector2
-
-import game_over
-import menu
-from game_over import *
 from menu import *
 import pygame as pg
 # initiate pygame
@@ -41,7 +34,6 @@ pygame.time.set_timer(SPAWNBLOCK, 1200)
 break_block = pygame.image.load('graphics/breakable_block.png')
 space_image = pygame.image.load('graphics/space.png')
 
-import time
 clock = pygame.time.Clock()
 
 
@@ -99,7 +91,6 @@ class Game:
         clock.tick(60)
         return score
 
-
     def crash(self):
         file = 'music/game_over.mp3'
         pygame.init()
@@ -108,7 +99,6 @@ class Game:
         pygame.mixer.music.play(1)
         self.playing = False
         self.passed_time = pygame.time.get_ticks() - self.start_time
-        print(self.passed_time)
         self.paused = False
         self.g_over = True
         self.controller = 2
@@ -125,7 +115,7 @@ class Game:
                         add_space = False
                 if add_space:
                     res.append(Space())
-                    print('space')
+
             if class_num == 1:
                 res.append(Block())
             elif class_num == 2:
@@ -140,7 +130,7 @@ class Game:
 
         return res
 
-    def move_block(self, block_list):
+    def move_block(self):
         for block in self.BLOCK_list:
             for elem in block:
                 if self.change:
@@ -167,13 +157,10 @@ class Game:
                 if snake.rect.colliderect(elem.rect):
                     if abs(elem.rect.bottom - snake.rect.top) < collision_tolerance:
                         if type(elem) == BreakableBlock:
-                            print('-apple')
+
                             elem.respawn()
                             self.list_of_apples = self.list_of_apples[:-1]
                             self.eaten_apples -= 1
-                            # for x in self.list_of_apples:
-                            #     new_variable = snake.rect_body.y + 26 * x
-                            #     screen.blit(snake.image_body, (snake.rect_body.x, new_variable))
                             if self.eaten_apples < 0:
                                 self.crash()
                         elif type(elem) == Block:
@@ -181,10 +168,10 @@ class Game:
                             self.playing = False
                     if abs(elem.rect.right - snake.rect.left) < collision_tolerance:
                         snake.rect.left = elem.rect.right + 1
-                        # print('left')
+
                     if abs(elem.rect.left - snake.rect.right) < collision_tolerance:
                         snake.rect.right = elem.rect.left - 1
-                        # print('right')
+
                     if abs(elem.rect.right - snake.rect_body.left) < collision_tolerance:
                         snake.rect_body.left = elem.rect.right + 1
                     if abs(elem.rect.left - snake.rect_body.right) < collision_tolerance:
@@ -211,12 +198,10 @@ class Game:
         bullet = Bullet()
         breakable_block = BreakableBlock()
 
-
-
         while self.playing:
             self.display_score()
             self.check_events()
-            #self.draw_text(f"Time {str(self.passed_time)} ms",  20, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 90)
+
             if self.START_KEY:
                 self.playing = False
 
@@ -235,7 +220,7 @@ class Game:
             screen.blit(apple.image, (apple.rect.x, apple.rect.y))
 
             # Blocks
-            self.move_block(self.BLOCK_list)
+            self.move_block()
             self.draw_block(self.BLOCK_list)
             self.remove_block()
 
@@ -250,7 +235,7 @@ class Game:
                 self.font_color = False
                 self.change = False
                 apple.speedy = 6
-                snake.move = 7
+                snake.move = 5
                 self.decrease_s += 40
 
             if self.eaten_apples > -1:
@@ -262,7 +247,7 @@ class Game:
                 self.eaten_apples += 1
                 self.list_of_apples.append(self.eaten_apples)
                 apple.respawn()
-                print(self.eaten_apples)
+
 
             key_state = pygame.key.get_pressed()
             if key_state[pygame.K_SPACE]:
@@ -270,7 +255,7 @@ class Game:
                 if bullet.rect.y < -400:
                     bullet.rect.y = snake.rect.y + 10
                     bullet.rect.x = snake.rect.x
-            # bullet.shoot()
+
                 for smth in self.BLOCK_list:
                     for block in smth:
                         if type(block) == Block:
@@ -280,12 +265,6 @@ class Game:
                                 bullet.rect.x = snake.rect.x
 
                 screen.blit(bullet.image, (bullet.rect.x, bullet.rect.y))
-            # for smth in self.BLOCK_list:
-            #     for block in smth:
-            #         if type(block) == BreakableBlock:
-            #             if bullet.rect.colliderect(block.rect):
-            #                 block.rect.x = random.randrange(west_b, east_b) + 1000
-            #                 bullet.rect.y = snake.rect.y + 10
 
             pygame.display.update()
 
@@ -301,7 +280,7 @@ class Game:
                     self.paused = True
                     self.g_over = False
                     self.controller = 5
-                    # self.curr_menu = self.pause
+
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
                 if event.key == pygame.K_BACKSPACE:
@@ -318,7 +297,6 @@ class Game:
                     self.UP_KEY = True
             if event.type == SPAWNBLOCK and self.playing is True:
                 self.BLOCK_list.append(self.create_block())
-                # print(self.BLOCK_list)
 
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
@@ -491,11 +469,3 @@ class Bullet:
             self.rect.left = west_b
         if self.rect.left > east_b:
             self.rect.left = east_b
-
-    # def shoot(self):
-    #     key_state = pygame.key.get_pressed()
-    #     if key_state[pygame.K_SPACE]:
-    #         self.rect.y -= self.speedy
-    #     if self.rect.y < -400:
-    #         self.rect.y = int(w_height * 0.5) + 10
-    #         self.rect.x = int(w_width * 0.5)
