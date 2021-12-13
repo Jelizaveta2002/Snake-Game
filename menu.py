@@ -75,11 +75,15 @@ class MainMenu(Menu):
         if self.game.START_KEY:
             if self.state == "Start":
                 self.game.playing = True
+                self.game.start = True
             elif self.state == "Settings":
+                self.game.start = False
                 self.game.curr_menu = self.game.options
             elif self.state == "Credits":
+                self.game.start = False
                 self.game.curr_menu = self.game.credits
             elif self.state == "Instruction":
+                self.game.start = False
                 self.game.curr_menu = self.game.instruction
             self.run_display = False
         elif self.game.paused is True:

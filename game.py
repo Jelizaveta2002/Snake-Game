@@ -42,6 +42,7 @@ textY = 10
 
 class Game:
     def __init__(self):
+        self.start = False
         self.change = False
         pygame.init()
         self.running, self.playing, self.game_over_screen = True, False, False
@@ -176,10 +177,10 @@ class Game:
                         snake.rect_body.right = elem.rect.left - 1
 
     def game_loop(self):
-        if self.playing is True and self.controller == 5:
+        if self.playing and self.controller == 5:
             self.start_time = self.score_list[-1]
             self.score_list.append(self.start_time)
-        if self.playing is True and self.controller == 2 or self.controller == 1:
+        if self.playing and self.controller == 2 or self.controller == 1:
             file = 'music/musiccc.mp3'
             pygame.init()
             pygame.mixer.init()
