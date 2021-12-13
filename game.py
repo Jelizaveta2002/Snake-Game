@@ -95,7 +95,7 @@ class Game:
         label_2 = font.render(f"Apples:{self.eaten_apples} tk", False, (250, 150, 180))
         screen.blit(label, (20, 50))
         screen.blit(label_2, (270, 50))
-        pg.display.flip()
+        pg.display.update()
         clock.tick(60)
         return score
 
@@ -265,21 +265,22 @@ class Game:
                 print(self.eaten_apples)
 
             key_state = pygame.key.get_pressed()
-            if key_state[pygame.K_SPACE]:
-                bullet.rect.y -= 100
-                if bullet.rect.y < -400:
-                    bullet.rect.y = snake.rect.y + 10
-                    bullet.rect.x = snake.rect.x
+            if self.change:
+                if key_state[pygame.K_SPACE]:
+                    bullet.rect.y -= 100
+                    if bullet.rect.y < -400:
+                        bullet.rect.y = snake.rect.y + 10
+                        bullet.rect.x = snake.rect.x
             # bullet.shoot()
-                for smth in self.BLOCK_list:
-                    for block in smth:
-                        if type(block) == Block:
-                            if bullet.rect.colliderect(block.rect):
-                                block.rect.x = random.randrange(west_b, east_b) + 1000
-                                bullet.rect.y = snake.rect.y + 10
-                                bullet.rect.x = snake.rect.x
+                    for smth in self.BLOCK_list:
+                        for block in smth:
+                            if type(block) == Block:
+                                if bullet.rect.colliderect(block.rect):
+                                    block.rect.x = random.randrange(west_b, east_b) + 1000
+                                    bullet.rect.y = snake.rect.y + 10
+                                    bullet.rect.x = snake.rect.x
 
-                screen.blit(bullet.image, (bullet.rect.x, bullet.rect.y))
+                    screen.blit(bullet.image, (bullet.rect.x, bullet.rect.y))
             # for smth in self.BLOCK_list:
             #     for block in smth:
             #         if type(block) == BreakableBlock:
