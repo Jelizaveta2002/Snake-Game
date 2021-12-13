@@ -138,8 +138,7 @@ class InstructionMenu(Menu):
                 self.run_display = False
             self.game.display.fill(self.game.BLACK)
             self.game.draw_text("Instruction", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
-            image = pygame.image.load('graphics/instruction.png')
-            self.game.display.blit(image, (70, 360))
+            self.game.display.blit(pygame.image.load('graphics/instruction.png'), (70, 360))
             self.blit_screen()
 
 
