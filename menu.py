@@ -108,9 +108,12 @@ class OptionsMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill(self.game.BLACK)
-            self.game.draw_text("Settings", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
-            self.game.draw_text("Volume", 15, self.volx, self.voly)
-            self.game.draw_text("Controls", 15, self.controlsx, self.contrlosy)
+            self.game.draw_text("Volume", 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
+            if self.game.music_play:
+                self.game.draw_text("On", 15, self.volx, self.voly)
+            else:
+                self.game.draw_text("Off", 15, self.volx, self.voly)
+            self.game.draw_text("Exit", 15, self.controlsx, self.contrlosy)
             self.draw_cursor()
             self.blit_screen()
 
@@ -126,7 +129,19 @@ class OptionsMenu(Menu):
                 self.state = "Volume"
                 self.cursor_rect.midtop = (self.volx + self.offset, self.voly)
         elif self.game.START_KEY:
-            pass
+            if self.game.music_play and self.state == "Volume":
+                self.game.music_play = False
+            elif not self.game.music_play and self.state == "Volume":
+                self.game.music_play = True
+            if self.state == "Controls":
+                self.run_display = False
+                self.game.g_over = False
+                self.game.BLOCK_list = []
+                self.game.change = False
+                self.game.font_color = False
+                self.game.increase_s = 20
+                self.game.decrease_s = 40
+                self.game.curr_menu = self.game.main_menu
 
 
 class InstructionMenu(Menu):
