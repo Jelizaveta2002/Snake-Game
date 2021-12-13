@@ -4,6 +4,7 @@ import sys
 from pygame.math import Vector2
 
 import game_over
+import menu
 from game_over import *
 from menu import *
 import pygame as pg
@@ -80,6 +81,7 @@ class Game:
         self.score_list = []
         self.increase_s = 20
         self.decrease_s = 40
+        self.font_color = False
 
     def blit_screen(self):
         self.window.blit(self.display, (0, 0))
@@ -89,8 +91,8 @@ class Game:
     def display_score(self):
         self.passed_time = pygame.time.get_ticks() - self.start_time
         score = str(int(self.passed_time // 100) / 10)
-        label = font.render(f"Time:{score} sec", False, (250, 150, 140))
-        label_2 = font.render(f"Apples:{self.eaten_apples} tk", False, (250, 150, 140))
+        label = font.render(f"Time:{score} sec", False, (250, 150, 180))
+        label_2 = font.render(f"Apples:{self.eaten_apples} tk", False, (250, 150, 180))
         screen.blit(label, (20, 50))
         screen.blit(label_2, (270, 50))
         pg.display.flip()
@@ -225,7 +227,10 @@ class Game:
             breakable_block.update()
             bullet.update()
             # On screen
-            screen.fill('#ccffcc')
+            if self.font_color is False:
+                screen.fill("#ccffcc")
+            elif self.font_color is True:
+                screen.fill((0, 0, 0))
             screen.blit(snake.image, (snake.rect.x, snake.rect.y))
             screen.blit(apple.image, (apple.rect.x, apple.rect.y))
 
@@ -235,12 +240,14 @@ class Game:
             self.remove_block()
 
             if (self.passed_time // 100 / 10) > self.increase_s:
+                self.font_color = True
                 self.change = True
                 apple.speedy = 8
                 snake.move = 7
                 self.increase_s += 40
 
             elif (self.passed_time // 100 / 10) > self.decrease_s:
+                self.font_color = False
                 self.change = False
                 apple.speedy = 6
                 snake.move = 7
